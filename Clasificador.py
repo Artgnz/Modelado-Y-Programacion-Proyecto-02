@@ -19,7 +19,7 @@ def suavizarDistancias(distancias):
     for color in distancias:
         lista1 = []
         lista2 = distancias[color]
-        for i in distancias:
+        for i in lista2:
             lista1.push(statistics.mean(lista1[i-2:i+3]))
         distanciasSuavizadas[color] = lista1
     return distanciasSuavizadas
@@ -35,10 +35,10 @@ def obtenerVertices(distancias):
 
         for i, value in signal:
             if value > baseline:
-                if peakValuea == None or value > peakValue:
+                if peakValue == None or value > peakValue:
                     peakValue = value
                     peakIndex = i
-                else:
+                else if value<peakValue and peakValue != None:
                     peakIndices.push(peakIndex)
                     peakIndex = None
                     peakValue = None
@@ -46,6 +46,23 @@ def obtenerVertices(distancias):
         if peakIndex != None:
             peakIndices.push(peakIndex)
 
-        vertices[color] = peakIndices
+        vertices[color] = len(peakIndices)
 
     return vertices    
+
+def clasificar(vertices):
+    clasificacion = {}
+    for color in vertices:
+        if vertices[color]==3:
+            clasificacion[color] = 'T'
+
+        if vertices[color]==4:
+            clasificacion[color] = 'C'
+
+        if 5<=vertices[color]<=8:
+            clasificacion[color] = 'X'
+
+        if vertices[color]==0 or vertices[color]>8:
+            clasificacion[color] = 'O'
+
+    return clasificacion
