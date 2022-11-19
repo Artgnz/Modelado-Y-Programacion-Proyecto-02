@@ -70,12 +70,11 @@ class Clasificador:
 
                 if (xa < 0) | (xa > len(im)) | (ya < 0) | (ya > len(im[0])):
                     llegue = True
-                    im[round(xa)][round(ya)]  = (0,0,0)
                     angulo = angulo + math.pi/360
                     distancias.append(distancia)
+
                 elif((im[round(xa)][round(ya)] != im[x][y]).any()):
                     llegue = True
-                    im[round(xa)][round(ya)]  = (0,0,0)
                     angulo = angulo + math.pi/360
                     distancias.append(distancia)
             
