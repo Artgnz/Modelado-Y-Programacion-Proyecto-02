@@ -68,7 +68,7 @@ class Clasificador:
                 ya = ya + (dx/pasos)
                 distancia = distancia + 1
 
-                if (xa < 0) | (xa > len(im)) | (ya < 0) | (ya > len(im[0])):
+                if (xa < 0) | (xa > len(im)-1) | (ya < 0) | (ya > len(im[0])-1):
                     llegue = True
                     angulo = angulo + math.pi/360
                     distancias.append(distancia)
