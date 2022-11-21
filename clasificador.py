@@ -5,56 +5,47 @@ from statistics import mean
 class Clasificador:
 
     @staticmethod
-    def obtenerDistancias(centros, contornos):
-        distancias = {}
-        for color in centros:
-            distanciasColor = []
-            listaContornos = contornos[color]
-            for tupla in listaContornos:
-                distanciasColor.append(calcularDistancia(centros[color],listaContornos[tupla]))
-            distancias[color] = distanciasColor
-        return distancias
-
-    @staticmethod
-    def calcularDistancia(centro, contorno):
-        return math.sqrt(((contorno[0]-centro[0])**2) + ((contorno[1]-centro[1])**2))
-
-    @staticmethod
-    def suavizarDistancias(distancias):
+    def __suavizarDistancias(distancias):
         distanciasSuavizadas = {}
+        tamanoVentana = 2
         for color in distancias:
             distanciasSuavizadasColor = []
-            listaDistancias = distancias[color]
-            for i in listaDistancias:
-                distanciasSuavizadasColor.push(statistics.mean(listaDistancias[i-2:i+3]))
-                distanciasSuavizadas[color] = distanciasSuavizadasColor
+            distanciasColor = distancias[color]
+            distanciasExpandidas = distanciasColor[-tamanoVentana:] + distanciasColor + distanciasColor[0:tamanoVentana]
+            for i in range(tamanoVentana, len(distanciasColor) + tamanoVentana):
+                ventana = distanciasExpandidas[i - tamanoVentana : i + tamanoVentana + 1]
+                promedio = mean(ventana)
+                distanciasSuavizadasColor.append(round(promedio,2))
+            distanciasSuavizadas[color] = distanciasSuavizadasColor
         return distanciasSuavizadas
 
     @staticmethod
-    def obtenerVertices(distancias):
+    def __obtenerVertices(distancias):
         vertices = {}
         for color in distancias:
             indicesCresta = []
             indiceCresta = None
             valorCresta = None
             listaDistancias = distancias[color]
-            promedio = statistics.mean(listaDistancias)
-            for i, valor in listaDistancias:
+            promedio = mean(listaDistancias)
+            i = 0
+            for valor in listaDistancias:
                 if valor > promedio:
                     if valorCresta == None or valor > valorCresta:
-                        valorCresta = valor
                         indiceCresta = i
-                    elif valor < valorCresta and valorCresta != None:
-                        indicesCresta.push(indiceCresta)
-                        indiceCresta = None
-                        valorCresta = None
+                        valorCresta = valor
+                elif valor < promedio and valorCresta != None:
+                    indicesCresta.append(indiceCresta)
+                    indiceCresta = None
+                    valorCresta = None
+                    i += 1
             if indiceCresta != None:
-                indicesCresta.push(indiceCresta)
+                indicesCresta.append(indiceCresta)
             vertices[color] = len(indicesCresta)
-        return vertices    
+        return vertices
 
     @staticmethod
-    def clasificar(vertices):
+    def __clasificar(vertices):
         clasificacion = {}
         for color in vertices:
             if vertices[color]==3:
@@ -76,7 +67,7 @@ class Clasificador:
                 color = tuple(imagen[fila][col])
                 if (color != colorFondo).any():
                     viejaSuma = sumaCoordenadas.get(color, [0,0])
-                    sumaCoordenadas[color] = [viejaSuma[0] + fila, viejaSuma[1] + col]
+                    sumaCoordenadas[color] = [viejaSuma[0] + col, viejaSuma[1] + fila]
                     cantidadCoordenadas[color] = cantidadCoordenadas.get(color, 0) + 1
         return Clasificador.__promediarCoordenadas(sumaCoordenadas, cantidadCoordenadas)
 
@@ -131,38 +122,35 @@ class Clasificador:
             distancias: lista
                 contiene las distancias desde cada uno de los pixeles del contorno hasta el centro de la figura
         """
-
         x = centro[0]
         y = centro[1]
-        
         angulo = 0
-        h = 10
+
+        h = 20
         distancias = []
         while(angulo < 2*math.pi):
             xf = x + (h * math.cos(angulo))
             yf = y + (h * math.sin(angulo))
-        
+            
             dx = xf - x
             dy = yf - y
             
             pasos = max(abs(dx), abs(dy))
-            distancia = 0
             llegue = False
             xa = x
             ya = y
             while(llegue == False):
-                xa = xa + (dy/pasos)
-                ya = ya + (dx/pasos)
-                distancia = distancia + 1
-
-                if (xa < 0) | (xa > len(im)-1) | (ya < 0) | (ya > len(im[0])-1):
+                xa = xa + (dx/pasos)
+                ya = ya + (dy/pasos)
+                # Fórmula de distancia entre dos puntos.
+                distancia = math.sqrt(((xa-x)**2) + ((ya-y)**2))
+                if (ya < 0) | (ya > len(im)-1) | (xa < 0) | (xa > len(im[0])-1):
                     llegue = True
                     angulo = angulo + math.pi/360
                     distancias.append(distancia)
 
-                elif((im[round(xa)][round(ya)] != im[x][y]).any()):
+                elif ((im[round(ya)][round(xa)] != im[round(y)][round(x)]).any()):
                     llegue = True
                     angulo = angulo + math.pi/360
                     distancias.append(distancia)
-            
         return distancias
