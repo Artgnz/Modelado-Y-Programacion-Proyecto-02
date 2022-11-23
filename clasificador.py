@@ -154,3 +154,14 @@ class Clasificador:
                     angulo = angulo + math.pi/360
                     distancias.append(distancia)
         return distancias
+
+    @staticmethod
+    def clasificarFiguras(ruta):
+        im = cv2.imread(ruta)
+        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        centros = Clasificador.__obtenerCentros(im)
+        distancias = Clasificador.__obtenerDistanciaContornos(im, centros)
+        distancias = Clasificador.__suavizarDistancias(distancias)
+        vertices = Clasificador.__obtenerVertices(distancias)
+        clasificaciones = Clasificador.__clasificar(vertices)
+        return clasificaciones
