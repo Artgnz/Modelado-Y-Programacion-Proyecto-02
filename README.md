@@ -28,7 +28,7 @@ Clone el repositorio:
     git clone https://github.com/Artgnz/Modelado-Y-Programacion-Proyecto-02.git
 ```
 ## Uso
-Primero, colóquese en el directorio Modelado-y-Programacion-Proyecto-02
+Primero, colóquese en el directorio donde se encuentra este README, por ejemplo,
 ```bash
     cd Modelado-y-Programacion-Proyecto-02
 ```
@@ -45,11 +45,11 @@ Ejemplo:
     
 1. Ejecutar el comando: 
 ```bash
-    python3 test_clasificador.py
+    python3 clasificador/test_clasificador.py
 ```
 También se puede utilizar el comando:
 ```bash
-    pytest test_clasificador.py
+    pytest clasificador/test_clasificador.py
 ```
 
 ## Uso de bibliotecas externas.
