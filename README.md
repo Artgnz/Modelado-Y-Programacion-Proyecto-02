@@ -47,6 +47,11 @@ Ejemplo:
 ```bash
     python3 test_clasificador.py
 ```
+También se puede utilizar el comando:
+```bash
+    pytest test_clasificador.py
+```
+
 ## Uso de bibliotecas externas.
 1. opencv
 La biblioteca opencv la usamos para leer la imagen que recibimos. De esta biblioteca usamos los siguientes métodos:
