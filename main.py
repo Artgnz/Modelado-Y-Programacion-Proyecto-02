@@ -1,4 +1,4 @@
-from clasificador import Clasificador
+from clasificador.clasificador import Clasificador
 from os import sys, path
 
 def imprimirClasificaciones(clasificaciones):
